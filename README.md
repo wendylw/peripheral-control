@@ -1,1 +1,1 @@
-# electron-hid-test
+# Peripheral Control
