@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HID Device Test</title>
+  <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+  <h1>HID Device Test</h1>
+  <h2>Detected Devices</h2>
+  <ul id="device-list"></ul>
+  <div id="selected-device" style="display: none;">
+    <h2>Selected Device</h2>
+    <p id="device-info"></p>
+    <button id="send-command">Send Command</button>
+  </div>
+
+  <script>
+    // 检测设备
+    window.electron.detectDevices().then((devices) => {
+      const deviceList = document.getElementById('device-list');
+      devices.forEach((device, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${device.product} (Vendor ID: ${device.vendorId}, Product ID: ${device.productId})`;
+        const button = document.createElement('button');
+        button.textContent = 'Select';
+        button.onclick = () => selectDevice(device);
+        li.appendChild(button);
+        deviceList.appendChild(li);
+      });
+    });
+
+    // 选择设备
+    function selectDevice(device) {
+      console.log('Selected device path:', device.path); // 打印设备路径
+
+      const selectedDevice = document.getElementById('selected-device');
+      const deviceInfo = document.getElementById('device-info');
+      deviceInfo.textContent = `${device.product} (Vendor ID: ${device.vendorId}, Product ID: ${device.productId})`;
+      selectedDevice.style.display = 'block';
+
+      // 发送命令
+      document.getElementById('send-command').onclick = () => {
+        const command = [0x00, 0x01, 0x02]; // 示例命令
+        window.electron.sendCommand(device.vendorId, device.productId, command).then((result) => {
+          console.log('Command sent:', JSON.stringify(result));
+          if (result.success) {
+            alert('Command sent successfully!');
+          } else {
+            alert(`Failed to send command: ${result.error}`);
+          }
+        });
+      };
+    }
+  </script>
+</body>
+</html>

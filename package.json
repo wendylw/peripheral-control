@@ -17,5 +17,24 @@
   "dependencies": {
     "electron": "^25.9.8",
     "node-hid": "^2.2.0"
+  },
+  "build": {
+    "appId": "com.example.electron-hid-test",
+    "productName": "Electron HID Test",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*"
+    ],
+    "mac": {
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   }
 }
